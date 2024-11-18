@@ -11,7 +11,7 @@ class User(Base):
     lastname = Column(String)
     age = Column(Integer)
     slug = Column(String, unique=True, index=True)
-    tasks = relationship('Task', back_populates='user')
+    tasks = relationship('Task', back_populates='user', cascade='save-update, merge, delete')
 
-from sqlalchemy.schema import CreateTable
-print (CreateTable(User.__table__))
+# from sqlalchemy.schema import CreateTable
+# print (CreateTable(User.__table__))

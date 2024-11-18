@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String
 
 engine = create_engine('sqlite:///taskmanager.db', echo = True)
 
-Sessionlocal = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(bind=engine)
 
 class Base(DeclarativeBase):
     pass
