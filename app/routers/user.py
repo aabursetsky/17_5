@@ -81,6 +81,11 @@ async def update_user(db: Annotated[Session, Depends(get_db)], user_id: int, use
 
 @router.delete('/delete')
 async def delete_user(db: Annotated[Session, Depends(get_db)], user_id: int):
+    """
+    :param db:
+    :param user_id:
+    :return:
+    """
     user = db.scalar(select(User).where(User.is_active == True, User.id == user_id))
     if user is not None:
         db.execute(delete(User).where(User.is_active == True, User.id == user_id))

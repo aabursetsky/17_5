@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 from app.backend.db_depends import get_db
 from typing import Annotated
-from app.models.task import User, Task
+from app.models import Task, User
 from app.schemas import CreateTask, UpdateTask
 # Функция создания slug-строки
 from slugify import slugify
@@ -14,7 +14,8 @@ router = APIRouter(prefix='/task', tags=['task'])
 
 @router.get('/')
 async def all_tasks(db: Annotated[Session, Depends(get_db)]):
-    task = db.scalar(select(Task)).all()
+    tasks = db.scalar(select(Task).where(Task.is_active == True)).all()
+    return tasks
 
 @router.get('/task_id')
 async def task_by_id(db: Annotated[Session, Depends(get_db)], task_id: int):
@@ -58,16 +59,16 @@ async def update_task(db: Annotated[Session, Depends(get_db)], task_id: int, tas
             content=task_update.content,
             priority=task_update.priority
         ))
-    db.commit()
+        db.commit()
 
-    return{
-        'status_code': status.HTTP_200_OK,
-        'transaction': 'Task update is successful'
-    }
-raise HTTPException(
-    status_code=404,
-    detail="Task was not found"
-)
+        return {
+            'status_code': status.HTTP_200_OK,
+            'transaction': 'Task update is successful'
+        }
+    raise HTTPException(
+        status_code=404,
+        detail="Task was not found"
+    )
 
 
 @router.delete('/delete')
