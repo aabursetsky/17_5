@@ -20,7 +20,7 @@ async def all_users(db: Annotated[Session, Depends(get_db)]):
     :param db:
     :return: users - "Все пользователи"
     """
-    users = db.scalar(select(User)).all()
+    users = db.scalars(select(User)).all()
     return users
 
 @router.get('/user_id')
@@ -39,17 +39,17 @@ async def user_by_id(db: Annotated[Session, Depends(get_db)], user_id: int):
     )
 
 @router.post('/create')
-async def create_user(db: Annotated[Session, Depends(get_db)], user_create_model: CreateUser):
+async def create_user(db: Annotated[Session, Depends(get_db)], create_user: CreateUser):
     """
     :param db:
-    :param user_create_model:
+    :param create_user:
     :return:
     """
-    db.execute(insert(User).values(username=user_create_model.username,
-                                   firstname=user_create_model.firstname,
-                                   lastname=user_create_model.lastname,
-                                   age=user_create_model.age,
-                                   slug=slugify(user_create_model.username)
+    db.execute(insert(User).values(username=create_user.username,
+                                   firstname=create_user.firstname,
+                                   lastname=create_user.lastname,
+                                   age=create_user.age,
+                                   slug=slugify(create_user.username)
                                    ))
     db.commit()
     return {
