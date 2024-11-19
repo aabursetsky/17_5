@@ -14,7 +14,7 @@ router = APIRouter(prefix='/task', tags=['task'])
 
 @router.get('/')
 async def all_tasks(db: Annotated[Session, Depends(get_db)]):
-    tasks = db.scalar(select(Task).where(Task.is_active == True)).all()
+    tasks = db.scalar(select(Task)).all()
     return tasks
 
 @router.get('/task_id')
