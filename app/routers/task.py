@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 from app.backend.db_depends import get_db
 from typing import Annotated
-from app.models import Task, User
+from app.models import *
 from app.schemas import CreateTask, UpdateTask
 # Функция создания slug-строки
 from slugify import slugify
@@ -61,8 +61,8 @@ async def update_task(db: Annotated[Session, Depends(get_db)], task_id: int, tas
         ))
         db.commit()
 
-        return {
-            'status_code': status.HTTP_200_OK,
+        return{
+           'status_code': status.HTTP_200_OK,
             'transaction': 'Task update is successful'
         }
     raise HTTPException(
@@ -72,7 +72,7 @@ async def update_task(db: Annotated[Session, Depends(get_db)], task_id: int, tas
 
 
 @router.delete('/delete')
-async def delete_task(db: Annotated[Session, Depends(get_db)], task_id: int,):
+async def delete_task(db: Annotated[Session, Depends(get_db)], task_id: int):
     task = db.scalar(select(Task).where(Task.id == task_id))
 
     if task is not None:
