@@ -38,6 +38,21 @@ async def user_by_id(db: Annotated[Session, Depends(get_db)], user_id: int):
             detail='User was not found'
     )
 
+@router.get('/user_id/task')
+async def task_by_user_id(db: Annotated[Session, Depends(get_db)], user_id: int):
+    """
+    :param db:
+    :param user_id:
+    :return: user - "Пользователь с определённым идентификатором user_id"
+    """
+    task = db.scalar(select(Task).where(User.id == user_id))
+    if task is not None:
+        return task
+    raise HTTPException(
+            status_code=404,
+            detail='Task was not found'
+    )
+
 @router.post('/create')
 async def create_user(db: Annotated[Session, Depends(get_db)], create_user: CreateUser):
     """
@@ -89,6 +104,7 @@ async def delete_user(db: Annotated[Session, Depends(get_db)], user_id: int):
     user = db.scalar(select(User).where(User.id == user_id))
     if user is not None:
         db.execute(delete(User).where(User.id == user_id))
+        db.execute(delete(Task).where(User.id == user_id))
         db.commit()
 
         return {

@@ -33,7 +33,7 @@ async def task_by_id(db: Annotated[Session, Depends(get_db)], task_id: int):
 async def create_task(db: Annotated[Session, Depends(get_db)], task_create: CreateTask, user_id: int):
     user = db.scalar(select(User).where(User.id == user_id))
 
-    if user is None:
+    if user is not None:
         db.execute(insert(Task).values(title=task_create.title,
                                        content=task_create.content,
                                        user_id=user.id,
