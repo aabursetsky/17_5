@@ -102,9 +102,11 @@ async def delete_user(db: Annotated[Session, Depends(get_db)], user_id: int):
     :return:
     """
     user = db.scalar(select(User).where(User.id == user_id))
+    tasks = db.scalars(select(Task).where(Task.user_id == user_id)).all()
     if user is not None:
         db.execute(delete(User).where(User.id == user_id))
-        db.execute(delete(Task).where(User.id == user_id))
+        if tasks:
+            db.execute(delete(Task).where(Task.user_id == user_id))
         db.commit()
 
         return {
